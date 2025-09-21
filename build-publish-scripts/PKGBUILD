@@ -24,7 +24,7 @@ makedepends=()  # non costruiamo wheel
 optdepends=('python-pip: per installare plugin opzionali')
 
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
-sha256sums=('1f591f087085a5a69ac7020224a3141477f242bdf3411039febf4588048b6c20')
+sha256sums=('d838aa830581baa00f793d31437615c132352c602ea30d027d844b4bf864dca6')
 
 prepare() {
   cd "$srcdir/$pkgname-$pkgver"
