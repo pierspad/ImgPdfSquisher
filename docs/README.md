@@ -3,6 +3,7 @@
 
 **Imgpdfsquisher** is a Python application for efficiently reducing PDF file sizes by optimizing high-resolution images. It provides both a user-friendly GUI and a powerful command-line interface.
 
+![Screenshot of the app](image.png)
 
 ## Features
 
