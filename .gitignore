@@ -1,0 +1,13 @@
+*.pdf
+build/
+dist/
+.venv/
+__pycache__/
+*.spec.bak
+imgpdfsquisher
+build-publish-scripts/imgpdfsquisher-1.0.0.tar.gz
+build-publish-scripts/imgpdfsquisher-1.0.0-1-any.pkg.tar.zst
+build-publish-scripts/src
+build-publish-scripts/pkg
+build-publish-scripts/usr/bin
+aur-repo
