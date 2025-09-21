@@ -5,3 +5,4 @@ dist/
 __pycache__/
 *.spec.bak
 imgpdfsquisher
+build-publish-scripts/imgpdfsquisher-1.0.0.tar.gz

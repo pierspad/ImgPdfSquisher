@@ -1,0 +1,39 @@
+# Maintainer: pierspad <pierpaolospadafora@proton.me>
+pkgname=imgpdfsquisher
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="A Python GUI application for reducing the filesize of PDF with high resolution images"
+arch=('any')
+url="https://github.com/pierspad/imgpdfsquisher"
+license=('MIT')
+depends=('python' 'poppler' 'pillow' 'reportlab' 'charset-normalizer' 'PySide6')
+makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
+optdepends=('python-pip: for installing optional dependencies like nbformat for Jupyter notebook support')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
+sha256sums=('6016349bb90bedc0df238d2f7ab2c92b754cb3e64db51f445b1840cf7b22db4e')
+
+prepare() {
+  cd "$srcdir/imgpdfsquisher-$pkgver"
+}
+
+build() {
+  cd "$srcdir/imgpdfsquisher-$pkgver"
+  unset VIRTUAL_ENV
+  export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+  /usr/bin/python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "$srcdir/imgpdfsquisher-$pkgver"
+}
+
+package() {
+  cd "$srcdir/imgpdfsquisher-$pkgver"
+  /usr/bin/python -m installer --destdir="$pkgdir" dist/*.whl
+
+  install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+  install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
+
+  install -Dm644 imgpdfsquisher/assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
+}

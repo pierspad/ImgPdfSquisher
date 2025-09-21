@@ -300,138 +300,8 @@ class MangaCompressorGUI(QWidget):
         self._save_timer = QTimer(self)
         self._save_timer.setSingleShot(True)
         self._save_timer.timeout.connect(self._persist_defaults_now)
-        self.i18n = {
-            'en': {
-                'window_title': 'Manga PDF Compressor',
-                'add': ' Add…',
-                'remove': ' Remove selected',
-                'clear': ' Clear',
-                'output_dir': 'Output dir:',
-                'temp_dir': 'Temp dir:',
-                'device': 'Device:',
-                'brand': 'Brand:',
-                'model': 'Model:',
-                'mode': 'Mode:',
-                'quality': 'Quality:',
-                'max_colors': 'Max colors:',
-                'workers': 'Workers:',
-                'ram': 'RAM %:',
-                'save_defaults': 'Save as default',
-                'start': ' Start',
-                'stop': ' Stop',
-                'theme': 'Theme',
-                'light': ' Light',
-                'dark': ' Dark',
-                'language_label': 'Language:',
-                'language_btn': ' EN',
-                'open_output': ' Open Output Folder',
-                'select_pdfs_title': 'Select PDF files',
-                'pdf_filter': 'PDF Files (*.pdf)',
-                'choose_dir': 'Choose directory',
-                'no_files_title': 'No files',
-                'add_at_least': 'Please add at least one PDF file.',
-                'params_title': 'Parameters',
-                'quality_range': 'Quality must be between 1 and 100.',
-                'max_colors_range': 'Max-colors power P must be between 1 and 8 (2^P = 2..256).',
-                'workers_limit': 'Maximum allowed workers: {cpu}.',
-                'ram_range': 'RAM % must be between 10 and 95.',
-                'defaults_saved': 'Defaults saved.',
-                'cannot_save_defaults': 'Cannot save defaults: {err}',
-                'all_done': 'All done.',
-                'drag_hint': "Drag PDF files here or use 'Add'",
-                'toggle_theme': 'Toggle light/dark theme',
-                'toggle_language': 'Change language',
-                'toggle_mode': 'Simple/Advanced',
-                'simple_mode': 'Simple mode',
-                'advanced_mode': 'Advanced mode',
-                'presets': 'Presets:',
-                'preset_ultra': 'Ultra',
-                'preset_very_high': 'Very High',
-                'preset_high': 'High',
-                'preset_normal': 'Normal',
-                'preset_low': 'Low',
-                'preset_very_low': 'Very Low',
-                'preset_minimal': 'Minimal',
-                'custom_device_section': 'Optional target device',
-                'custom_device_use': ' Use custom device',
-                'custom_name': 'Name',
-                'custom_inches': 'Diagonal (in)',
-                'custom_resolution': 'Resolution (px)',
-                'custom_dpi': 'DPI',
-                'suggest_prefix': 'Suggestion:',
-                'estimate_label': 'Estimated size:',
-                'apply_suggestion': 'Apply suggestion',
-                'apply_suggestion_tip': 'Set presets to the suggested quality level',
-                'preview_title': 'Quality preview',
-                'preview_original': 'Original',
-                'preview_compressed': 'Compressed',
-            },
-            'it': {
-                'window_title': 'Manga PDF Compressor',
-                'add': ' Aggiungi…',
-                'remove': ' Rimuovi selezionati',
-                'clear': ' Svuota',
-                'output_dir': 'Cartella di output:',
-                'temp_dir': 'Cartella temporanea:',
-                'device': 'Dispositivo:',
-                'brand': 'Marca:',
-                'model': 'Modello:',
-                'mode': 'Modalità:',
-                'quality': 'Qualità:',
-                'max_colors': 'Colori massimi:',
-                'workers': 'Processi:',
-                'ram': 'RAM %:',
-                'save_defaults': 'Salva come default',
-                'start': ' Avvia',
-                'stop': ' Stop',
-                'theme': 'Tema',
-                'light': ' Chiaro',
-                'dark': ' Scuro',
-                'language_label': 'Lingua:',
-                'language_btn': ' IT',
-                'open_output': ' Apri Cartella Di Output',
-                'select_pdfs_title': 'Seleziona file PDF',
-                'pdf_filter': 'File PDF (*.pdf)',
-                'choose_dir': 'Scegli cartella',
-                'no_files_title': 'Nessun file',
-                'add_at_least': 'Aggiungi almeno un file PDF.',
-                'params_title': 'Parametri',
-                'quality_range': 'La qualità deve essere tra 1 e 100.',
-                'max_colors_range': 'La potenza deve essere tra 1 e 8 (2^P = 2..256).',
-                'workers_limit': 'Processi massimi consentiti: {cpu}.',
-                'ram_range': 'RAM % deve essere tra 10 e 95.',
-                'defaults_saved': 'Default salvati.',
-                'cannot_save_defaults': 'Impossibile salvare i default: {err}',
-                'all_done': 'Completato.',
-                'drag_hint': "Trascina qui i file PDF oppure usa 'Aggiungi'",
-                'toggle_theme': 'Cambia tema chiaro/scuro',
-                'toggle_language': 'Cambia lingua',
-                'toggle_mode': 'Semplice/Avanzata',
-                'simple_mode': 'Modalità semplice',
-                'advanced_mode': 'Modalità avanzata',
-                'presets': 'Preimpostazioni:',
-                'preset_ultra': 'Ultra',
-                'preset_very_high': 'Molto Alta',
-                'preset_high': 'Alta',
-                'preset_normal': 'Normale',
-                'preset_low': 'Bassa',
-                'preset_very_low': 'Molto Bassa',
-                'preset_minimal': 'Minima',
-                'custom_device_section': 'Dispositivo di destinazione (opzionale)',
-                'custom_device_use': ' Usa device personalizzato',
-                'custom_name': 'Nome',
-                'custom_inches': 'Diagonale (pollici)',
-                'custom_resolution': 'Risoluzione (px)',
-                'custom_dpi': 'DPI',
-                'suggest_prefix': 'Suggerimento:',
-                'estimate_label': 'Stima dimensione:',
-                'apply_suggestion': 'Applica suggerimento',
-                'apply_suggestion_tip': 'Imposta i preset al livello di qualità suggerito',
-                'preview_title': 'Anteprima qualità',
-                'preview_original': 'Originale',
-                'preview_compressed': 'Compressa',
-            }
-        }
+        # Load i18n dictionaries from external JSON files (i18n/*.json)
+        self._load_i18n()
         self._build_ui()
         self._load_defaults_into_ui()
         self.apply_theme(self.theme)
@@ -575,8 +445,9 @@ class MangaCompressorGUI(QWidget):
         for k, v in DEVICE_PROFILES.items():
             self.device_combo.addItem(f"{k} — {v['description']}", userData=k)
         self.mode_combo = QComboBox()
-        for k, v in COMPRESSION_MODES.items():
-            self.mode_combo.addItem(f'{k} — {v}', userData=k)
+        # Pre-populate with localization-aware labels
+        for k in COMPRESSION_MODES.keys():
+            self.mode_combo.addItem(f"{k} — {self._localized_mode_label(k)}", userData=k)
         self.quality_slider = QSlider(Qt.Horizontal)
         self.quality_slider.setRange(1, 100)
         self.quality_slider.setValue(DEFAULT_QUALITY)
@@ -946,7 +817,8 @@ class MangaCompressorGUI(QWidget):
         self._schedule_save()
 
     def apply_language(self, lang: str):
-        self.language = 'it' if lang == 'it' else 'en'
+        # accept any available language loaded from i18n folder
+        self.language = lang if lang in self.i18n else (self.language if self.language in self.i18n else (list(self.i18n.keys())[0] if self.i18n else 'en'))
         t = self.i18n[self.language]
         self.setWindowTitle(t['window_title'])
         for btn in self.findChildren(QPushButton):
@@ -974,6 +846,8 @@ class MangaCompressorGUI(QWidget):
         self.tmp_btn.setText(' Temp…')
         self.lbl_device.setText(t['device'])
         self.lbl_mode.setText(t['mode'])
+        # Refresh localized labels of compression modes while keeping the selected key
+        self._refresh_modes_labels()
         self.lbl_quality.setText(t['quality'] + ' (1–100):')
         self._update_colors_label()
         self.lbl_workers.setText(t['workers'])
@@ -985,7 +859,11 @@ class MangaCompressorGUI(QWidget):
             self.theme_btn.setText(t['light'] if self.theme == 'light' else t['dark'])
         self.theme_btn.setToolTip(t['toggle_theme'])
         if hasattr(self, 'language_btn'):
-            self.language_btn.setText(t['language_btn'])
+            # If t contains language_btn use it, otherwise display code in upper-case
+            btn_txt = t.get('language_btn')
+            if not btn_txt:
+                btn_txt = f" {self.language.upper()}"
+            self.language_btn.setText(btn_txt)
             self.language_btn.setToolTip(t['toggle_language'])
         self.open_output_btn.setText(t['open_output'])
         self.mode_btn.setText(' ' + (t['advanced_mode'] if self.ui_mode == 'advanced' else t['simple_mode']))
@@ -1021,6 +899,32 @@ class MangaCompressorGUI(QWidget):
             self._update_previews(p)
         except Exception:
             pass
+
+    def _refresh_modes_labels(self):
+        try:
+            cur_key = self.mode_combo.currentData()
+            self.mode_combo.blockSignals(True)
+            for i in range(self.mode_combo.count()):
+                key = self.mode_combo.itemData(i)
+                self.mode_combo.setItemText(i, f"{key} — {self._localized_mode_label(key)}")
+            # restore selection
+            if cur_key is not None:
+                self._set_combo_by_data(self.mode_combo, cur_key)
+        except Exception:
+            pass
+        finally:
+            try:
+                self.mode_combo.blockSignals(False)
+            except Exception:
+                pass
+
+    def _localized_mode_label(self, key: str) -> str:
+        try:
+            t = self.i18n.get(self.language, {})
+            modes = t.get('modes', {}) if isinstance(t, dict) else {}
+            return modes.get(key, COMPRESSION_MODES.get(key, key))
+        except Exception:
+            return COMPRESSION_MODES.get(key, key)
 
     def _slider_jump_to_click(self, slider: QSlider):
 
@@ -1449,6 +1353,99 @@ class MangaCompressorGUI(QWidget):
                 self._prefill_custom_from_device(key)
         except Exception:
             pass
+
+    def _load_i18n(self):
+        """Load i18n dictionaries from i18n/*.json. Fallback to built-ins if missing."""
+        self.i18n = {}
+        try:
+            base = Path(__file__).parent / 'i18n'
+            if base.exists():
+                for p in sorted(base.glob('*.json')):
+                    try:
+                        code = p.stem.lower()
+                        with open(p, 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                        if isinstance(data, dict):
+                            self.i18n[code] = data
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+        # ensure at least English exists to avoid crashes
+        if not self.i18n:
+            self.i18n = {
+                'en': {
+                    'window_title': 'Manga PDF Compressor',
+                    'add': ' Add…',
+                    'remove': ' Remove selected',
+                    'clear': ' Clear',
+                    'output_dir': 'Output dir:',
+                    'temp_dir': 'Temp dir:',
+                    'device': 'Device:',
+                    'brand': 'Brand:',
+                    'model': 'Model:',
+                    'mode': 'Mode:',
+                    'quality': 'Quality:',
+                    'max_colors': 'Max colors:',
+                    'workers': 'Workers:',
+                    'ram': 'RAM %:',
+                    'save_defaults': 'Save as default',
+                    'start': ' Start',
+                    'stop': ' Stop',
+                    'theme': 'Theme',
+                    'light': ' Light',
+                    'dark': ' Dark',
+                    'language_label': 'Language:',
+                    'language_btn': ' EN',
+                    'open_output': ' Open Output Folder',
+                    'select_pdfs_title': 'Select PDF files',
+                    'pdf_filter': 'PDF Files (*.pdf)',
+                    'choose_dir': 'Choose directory',
+                    'no_files_title': 'No files',
+                    'add_at_least': 'Please add at least one PDF file.',
+                    'params_title': 'Parameters',
+                    'quality_range': 'Quality must be between 1 and 100.',
+                    'max_colors_range': 'Max-colors power P must be between 1 and 8 (2^P = 2..256).',
+                    'workers_limit': 'Maximum allowed workers: {cpu}.',
+                    'ram_range': 'RAM % must be between 10 and 95.',
+                    'defaults_saved': 'Defaults saved.',
+                    'cannot_save_defaults': 'Cannot save defaults: {err}',
+                    'all_done': 'All done.',
+                    'drag_hint': "Drag PDF files here or use 'Add'",
+                    'toggle_theme': 'Toggle light/dark theme',
+                    'toggle_language': 'Change language',
+                    'toggle_mode': 'Simple/Advanced',
+                    'simple_mode': 'Simple mode',
+                    'advanced_mode': 'Advanced mode',
+                    'presets': 'Presets:',
+                    'preset_ultra': 'Ultra',
+                    'preset_very_high': 'Very High',
+                    'preset_high': 'High',
+                    'preset_normal': 'Normal',
+                    'preset_low': 'Low',
+                    'preset_very_low': 'Very Low',
+                    'preset_minimal': 'Minimal',
+                    'custom_device_section': 'Optional target device',
+                    'custom_device_use': ' Use custom device',
+                    'custom_name': 'Name',
+                    'custom_inches': 'Diagonal (in)',
+                    'custom_resolution': 'Resolution (px)',
+                    'custom_dpi': 'DPI',
+                    'suggest_prefix': 'Suggestion:',
+                    'estimate_label': 'Estimated size:',
+                    'apply_suggestion': 'Apply suggestion',
+                    'apply_suggestion_tip': 'Set presets to the suggested quality level',
+                    'preview_title': 'Quality preview',
+                    'preview_original': 'Original',
+                    'preview_compressed': 'Compressed',
+                    'modes': {
+                        'auto': 'Auto — Detect image type',
+                        'bw': 'Force black and white (1-bit PNG)',
+                        'grayscale': 'Force grayscale (JPEG)',
+                        'color': 'Force color (JPEG)'
+                    }
+                }
+            }
 
     def on_stop(self):
         try:

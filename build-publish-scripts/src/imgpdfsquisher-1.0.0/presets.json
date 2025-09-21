@@ -1,0 +1,9 @@
+{
+  "ultra": { "quality": 95, "max_colors": 256, "mode": "auto" },
+  "very_high": { "quality": 80, "max_colors": 256, "mode": "auto" },
+  "high": { "quality": 65, "max_colors": 256, "mode": "auto" },
+  "normal": { "quality": 50, "max_colors": 128, "mode": "auto" },
+  "low": { "quality": 35, "max_colors": 64, "mode": "auto" },
+  "very_low": { "quality": 20, "max_colors": 32, "mode": "auto" },
+  "minimal": { "quality": 10, "max_colors": 16, "mode": "auto" }
+}
