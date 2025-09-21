@@ -7,7 +7,6 @@ arch=('any')
 url="https://github.com/pierspad/imgpdfsquisher"
 license=('MIT')
 
-# runtime deps
 depends=(
   'python'
   'poppler'
@@ -15,59 +14,59 @@ depends=(
   'python-reportlab'
   'python-charset-normalizer'
   'pyside6'
-  'python-pdf2image'   # su AUR su molte installazioni
+  'python-pdf2image'
 )
 
-makedepends=()         # nessuna build di wheel
-optdepends=('python-pip: per eventuali plugin/estensioni')
+makedepends=()
+optdepends=('python-pip: per installare plugin opzionali')
 
-# tarball ufficiale da GitHub (tag vX.Y.Z)
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
-sha256sums=('SKIP')    # usa `updpkgsums` per fissare l'hash esatto
+sha256sums=('f22dfb899a8eed22c980ac78f976b0e9c4166375efb124e184e0e5e7c7641c25')
 
 prepare() {
   cd "$srcdir/$pkgname-$pkgver"
 }
 
-build() {
-  :
-}
-
 check() {
-  :
+  cd "$srcdir/$pkgname-$pkgver"
 }
 
 package() {
   cd "$srcdir/$pkgname-$pkgver"
 
-  # 1) Install app sorgente
+  # Installa i file Python nell'app directory
   install -d "$pkgdir/usr/lib/$pkgname"
-  # Copia tutto tranne le cartelle/artefatti di build locali
-  cp -r ./* "$pkgdir/usr/lib/$pkgname/"
-  rm -rf "$pkgdir/usr/lib/$pkgname/build-publish-scripts/src" \
-         "$pkgdir/usr/lib/$pkgname/build-publish-scripts/pkg"
+  
+  # Copia solo i file necessari
+  cp gui_app.py "$pkgdir/usr/lib/$pkgname/"
+  cp manga_compressor.py "$pkgdir/usr/lib/$pkgname/"
+  cp presets.json "$pkgdir/usr/lib/$pkgname/"
+  cp requirements.txt "$pkgdir/usr/lib/$pkgname/"
+  cp pyproject.toml "$pkgdir/usr/lib/$pkgname/"
+  
+  # Copia le directory necessarie
+  cp -r assets/ "$pkgdir/usr/lib/$pkgname/"
+  cp -r i18n/ "$pkgdir/usr/lib/$pkgname/"
+  cp -r modules/ "$pkgdir/usr/lib/$pkgname/"
 
-  # 2) Wrapper CLI in PATH
+  # Crea lo script di avvio
   install -d "$pkgdir/usr/bin"
-  cat > "$pkgdir/usr/bin/$pkgname" <<'EOF'
+  cat > "$pkgdir/usr/bin/$pkgname" << 'EOF'
 #!/usr/bin/env bash
-# Avvia l'app GUI
-exec python /usr/lib/imgpdfsquisher/gui_app.py "$@"
+# Avvia l'applicazione GUI
+cd /usr/lib/imgpdfsquisher
+exec /usr/bin/python gui_app.py "$@"
 EOF
   chmod 755 "$pkgdir/usr/bin/$pkgname"
 
-  # 3) Desktop entry
-  install -d "$pkgdir/usr/share/applications"
-  install -m 644 "imgpdfsquisher.desktop" "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
-
-  # 4) Icona (usa il PNG del repo: assets/logo/logo.png)
-  #    La chiave è installarla con nome 'imgpdfsquisher.png' nel tema hicolor.
-  install -d "$pkgdir/usr/share/icons/hicolor/256x256/apps"
-  install -m 644 "assets/logo/logo.png" "$pkgdir/usr/share/icons/hicolor/256x256/apps/imgpdfsquisher.png"
-
-  # (opzionale) copia anche una dimensione 512 se la hai:
-  if [[ -f "assets/logo/logo-512.png" ]]; then
-    install -d "$pkgdir/usr/share/icons/hicolor/512x512/apps"
-    install -m 644 "assets/logo/logo-512.png" "$pkgdir/usr/share/icons/hicolor/512x512/apps/imgpdfsquisher.png"
+  # Installa il desktop file se esiste
+  if [ -f "packaging/imgpdfsquisher.desktop" ]; then
+    install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
   fi
+  
+  # Installa l'icona
+  install -Dm644 assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
+
+  # Installa la licenza
+  install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

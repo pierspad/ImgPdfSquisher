@@ -57,6 +57,9 @@ tar --exclude='.git' \
     --exclude='.idea' \
     --exclude='.flatpak-builder' \
     --exclude='flatpak-build' \
+    --exclude='compressed' \
+    --exclude='tmp' \
+    --exclude='.manga_compressor_defaults.json' \
     -czf "build-publish-scripts/imgpdfsquisher-$VERSION.tar.gz" \
     --transform="s,^,imgpdfsquisher-$VERSION/," \
     --exclude='build-publish-scripts/src' \

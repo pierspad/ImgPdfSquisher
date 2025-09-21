@@ -21,7 +21,7 @@ makedepends=()
 optdepends=('python-pip: per installare plugin opzionali')
 
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
-sha256sums=('6912a3b07ccfdd01e30d4503994fb3d7205808f377977b19dcf143ed6327d1aa')
+sha256sums=('1c95e9f1d047d1a10e8f5cf50a5b499acb48f05026b1e85ff982b7047270666f')
 
 prepare() {
   cd "$srcdir/$pkgname-$pkgver"
@@ -34,19 +34,39 @@ check() {
 package() {
   cd "$srcdir/$pkgname-$pkgver"
 
+  # Installa i file Python nell'app directory
   install -d "$pkgdir/usr/lib/$pkgname"
-  cp -r ./* "$pkgdir/usr/lib/$pkgname/"
+  
+  # Copia solo i file necessari
+  cp gui_app.py "$pkgdir/usr/lib/$pkgname/"
+  cp manga_compressor.py "$pkgdir/usr/lib/$pkgname/"
+  cp presets.json "$pkgdir/usr/lib/$pkgname/"
+  cp requirements.txt "$pkgdir/usr/lib/$pkgname/"
+  cp pyproject.toml "$pkgdir/usr/lib/$pkgname/"
+  
+  # Copia le directory necessarie
+  cp -r assets/ "$pkgdir/usr/lib/$pkgname/"
+  cp -r i18n/ "$pkgdir/usr/lib/$pkgname/"
+  cp -r modules/ "$pkgdir/usr/lib/$pkgname/"
 
+  # Crea lo script di avvio
   install -d "$pkgdir/usr/bin"
   cat > "$pkgdir/usr/bin/$pkgname" << 'EOF'
 #!/usr/bin/env bash
-# Avvia l'app come modulo Python. Richiede __main__.py nel package.
-exec /usr/bin/python -m imgpdfsquisher "$@"
+# Avvia l'applicazione GUI
+cd /usr/lib/imgpdfsquisher
+exec /usr/bin/python gui_app.py "$@"
 EOF
   chmod 755 "$pkgdir/usr/bin/$pkgname"
 
-  install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
-  install -Dm644 imgpdfsquisher/assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
+  # Installa il desktop file se esiste
+  if [ -f "packaging/imgpdfsquisher.desktop" ]; then
+    install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
+  fi
+  
+  # Installa l'icona
+  install -Dm644 assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
 
+  # Installa la licenza
   install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
