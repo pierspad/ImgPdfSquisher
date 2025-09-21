@@ -14,13 +14,10 @@ depends=(
   'python-reportlab'
   'python-charset-normalizer'
   'pyside6'
-  # ATTENZIONE: python-pdf2image è spesso su AUR.
-  # Lascialo qui se vuoi richiederlo come dipendenza,
-  # ma l'utente dovrà installarlo da AUR prima di makepkg.
   'python-pdf2image'
 )
 
-makedepends=()  # non costruiamo wheel
+makedepends=()
 optdepends=('python-pip: per installare plugin opzionali')
 
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
@@ -30,21 +27,16 @@ prepare() {
   cd "$srcdir/$pkgname-$pkgver"
 }
 
-# niente build()
-
 check() {
   cd "$srcdir/$pkgname-$pkgver"
-  # opzionale: python -m py_compile su file critici
 }
 
 package() {
   cd "$srcdir/$pkgname-$pkgver"
 
-  # Installa i sorgenti "così come sono" sotto /usr/lib/imgpdfsquisher
   install -d "$pkgdir/usr/lib/$pkgname"
   cp -r ./* "$pkgdir/usr/lib/$pkgname/"
 
-  # Wrapper binario in PATH
   install -d "$pkgdir/usr/bin"
   cat > "$pkgdir/usr/bin/$pkgname" << 'EOF'
 #!/usr/bin/env bash
@@ -53,10 +45,8 @@ exec /usr/bin/python -m imgpdfsquisher "$@"
 EOF
   chmod 755 "$pkgdir/usr/bin/$pkgname"
 
-  # Desktop file e icona
   install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
   install -Dm644 imgpdfsquisher/assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
 
-  # Licenza
   install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
