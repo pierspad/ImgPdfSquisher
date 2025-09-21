@@ -7,6 +7,7 @@ arch=('any')
 url="https://github.com/pierspad/imgpdfsquisher"
 license=('MIT')
 
+# runtime deps
 depends=(
   'python'
   'poppler'
@@ -14,49 +15,59 @@ depends=(
   'python-reportlab'
   'python-charset-normalizer'
   'pyside6'
-  # ATTENZIONE: python-pdf2image è spesso su AUR.
-  # Lascialo qui se vuoi richiederlo come dipendenza,
-  # ma l'utente dovrà installarlo da AUR prima di makepkg.
-  'python-pdf2image'
+  'python-pdf2image'   # su AUR su molte installazioni
 )
 
-makedepends=()  # non costruiamo wheel
-optdepends=('python-pip: per installare plugin opzionali')
+makedepends=()         # nessuna build di wheel
+optdepends=('python-pip: per eventuali plugin/estensioni')
 
+# tarball ufficiale da GitHub (tag vX.Y.Z)
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
-sha256sums=('1f591f087085a5a69ac7020224a3141477f242bdf3411039febf4588048b6c20')
+sha256sums=('SKIP')    # usa `updpkgsums` per fissare l'hash esatto
 
 prepare() {
   cd "$srcdir/$pkgname-$pkgver"
 }
 
-# niente build()
+build() {
+  :
+}
 
 check() {
-  cd "$srcdir/$pkgname-$pkgver"
-  # opzionale: python -m py_compile su file critici
+  :
 }
 
 package() {
   cd "$srcdir/$pkgname-$pkgver"
 
-  # Installa i sorgenti "così come sono" sotto /usr/lib/imgpdfsquisher
+  # 1) Install app sorgente
   install -d "$pkgdir/usr/lib/$pkgname"
+  # Copia tutto tranne le cartelle/artefatti di build locali
   cp -r ./* "$pkgdir/usr/lib/$pkgname/"
+  rm -rf "$pkgdir/usr/lib/$pkgname/build-publish-scripts/src" \
+         "$pkgdir/usr/lib/$pkgname/build-publish-scripts/pkg"
 
-  # Wrapper binario in PATH
+  # 2) Wrapper CLI in PATH
   install -d "$pkgdir/usr/bin"
-  cat > "$pkgdir/usr/bin/$pkgname" << 'EOF'
+  cat > "$pkgdir/usr/bin/$pkgname" <<'EOF'
 #!/usr/bin/env bash
-# Avvia l'app come modulo Python. Richiede __main__.py nel package.
-exec /usr/bin/python -m imgpdfsquisher "$@"
+# Avvia l'app GUI
+exec python /usr/lib/imgpdfsquisher/gui_app.py "$@"
 EOF
   chmod 755 "$pkgdir/usr/bin/$pkgname"
 
-  # Desktop file e icona
-  install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
-  install -Dm644 imgpdfsquisher/assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
+  # 3) Desktop entry
+  install -d "$pkgdir/usr/share/applications"
+  install -m 644 "imgpdfsquisher.desktop" "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
 
-  # Licenza
-  install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  # 4) Icona (usa il PNG del repo: assets/logo/logo.png)
+  #    La chiave è installarla con nome 'imgpdfsquisher.png' nel tema hicolor.
+  install -d "$pkgdir/usr/share/icons/hicolor/256x256/apps"
+  install -m 644 "assets/logo/logo.png" "$pkgdir/usr/share/icons/hicolor/256x256/apps/imgpdfsquisher.png"
+
+  # (opzionale) copia anche una dimensione 512 se la hai:
+  if [[ -f "assets/logo/logo-512.png" ]]; then
+    install -d "$pkgdir/usr/share/icons/hicolor/512x512/apps"
+    install -m 644 "assets/logo/logo-512.png" "$pkgdir/usr/share/icons/hicolor/512x512/apps/imgpdfsquisher.png"
+  fi
 }

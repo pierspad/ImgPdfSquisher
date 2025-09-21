@@ -277,7 +277,7 @@ class MangaCompressorGUI(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Manga PDF Compressor')
-        self.setFixedSize(1060, 810)
+        self.setFixedSize(1100, 810)
         self.setWindowIcon(QIcon())
         self.presets = self._load_presets()
         self.signals = Signals()
