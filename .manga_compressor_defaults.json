@@ -1,0 +1,14 @@
+{
+  "device": "ereader",
+  "mode": "auto",
+  "quality": 20,
+  "max_colors": 256,
+  "workers": 8,
+  "ram_limit": 75,
+  "suffix": "_compressed",
+  "out_dir": "compressed",
+  "tmp_dir": "tmp",
+  "theme": "dark",
+  "language": "pt",
+  "ui_mode": "simple"
+}

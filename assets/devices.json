@@ -1,0 +1,108 @@
+{
+  "Apple Phones": [
+    { "model": "iPhone 15",        "size": 6.1, "resolution": "2556x1179", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 15 Plus",   "size": 6.7, "resolution": "2796x1290", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 15 Pro",    "size": 6.1, "resolution": "2556x1179", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 15 Pro Max","size": 6.7, "resolution": "2796x1290", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 16",        "size": 6.1, "resolution": "2556x1179", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 16 Plus",   "size": 6.7, "resolution": "2796x1290", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 16 Pro",    "size": 6.3, "resolution": "2622x1206", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 16 Pro Max","size": 6.9, "resolution": "2908x1320", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 17",        "size": 6.3, "resolution": "2622x1206", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 17 Air",    "size": 6.5, "resolution": "2752x1278", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 17 Pro",    "size": 6.3, "resolution": "2622x1206", "ppi": 460, "key": "phone" },
+    { "model": "iPhone 17 Pro Max","size": 6.9, "resolution": "2908x1320", "ppi": 460, "key": "phone" }
+  ],
+  "Apple Tablets": [
+    { "model": "iPad 11th Gen 10.9\"", "size": 10.9, "resolution": "2360x1640", "ppi": 264, "key": "tablet_10" },
+    { "model": "iPad Air 6 11\"",      "size": 11.0, "resolution": "2360x1640", "ppi": 264, "key": "tablet_10" },
+    { "model": "iPad Air 6 13\"",      "size": 13.0, "resolution": "2732x2048", "ppi": 264, "key": "tablet_12" },
+    { "model": "iPad Pro 11\"",        "size": 11.0, "resolution": "2388x1668", "ppi": 264, "key": "tablet_10" },
+    { "model": "iPad Pro 13\"",        "size": 13.0, "resolution": "2732x2048", "ppi": 264, "key": "tablet_12" }
+  ],
+  "Samsung Phones": [
+    { "model": "Galaxy S23",        "size": 6.1, "resolution": "2340x1080", "ppi": 425, "key": "phone" },
+    { "model": "Galaxy S23 Ultra",  "size": 6.8, "resolution": "3088x1440", "ppi": 500, "key": "phone" },
+    { "model": "Galaxy S24",        "size": 6.2, "resolution": "2340x1080", "ppi": 416, "key": "phone" },
+    { "model": "Galaxy S24 Ultra",  "size": 6.8, "resolution": "3120x1440", "ppi": 505, "key": "phone" },
+    { "model": "Galaxy S25",        "size": 6.2, "resolution": "2340x1080", "ppi": 416, "key": "phone" },
+    { "model": "Galaxy S25 Ultra",  "size": 6.9, "resolution": "3120x1440", "ppi": 500, "key": "phone" },
+    { "model": "Galaxy Z Flip 5",   "size": 6.7, "resolution": "2640x1080", "ppi": 425, "key": "foldable_phone" },
+    { "model": "Galaxy Z Fold 5",   "size": 7.6, "resolution": "2176x1812", "ppi": 374, "key": "foldable_phone" },
+    { "model": "Galaxy Z Flip 6",   "size": 6.7, "resolution": "2640x1080", "ppi": 425, "key": "foldable_phone" },
+    { "model": "Galaxy Z Fold 6",   "size": 7.6, "resolution": "2176x1812", "ppi": 374, "key": "foldable_phone" },
+    { "model": "Galaxy Z Fold 7",   "size": 7.6, "resolution": "2208x1840", "ppi": 378, "key": "foldable_phone" }
+  ],
+  "Samsung Tablets": [
+    { "model": "Galaxy Tab S9 11\"",     "size": 11.0, "resolution": "2560x1600", "ppi": 274, "key": "tablet_10" },
+    { "model": "Galaxy Tab S9+ 12.4\"",  "size": 12.4, "resolution": "2800x1752", "ppi": 266, "key": "tablet_12" },
+    { "model": "Galaxy Tab S9 Ultra 14.6\"", "size": 14.6, "resolution": "2960x1848", "ppi": 240, "key": "tablet_12" },
+    { "model": "Galaxy Tab S10+",       "size": 12.4, "resolution": "2800x1752", "ppi": 266, "key": "tablet_12" },
+    { "model": "Galaxy Tab S10 Ultra",  "size": 14.6, "resolution": "2960x1848", "ppi": 240, "key": "tablet_12" },
+    { "model": "Galaxy Tab S11 Ultra",  "size": 14.6, "resolution": "2960x1848", "ppi": 240, "key": "tablet_12" }
+  ],
+  "Google Phones": [
+    { "model": "Pixel 7a",         "size": 6.1, "resolution": "2400x1080", "ppi": 429, "key": "phone" },
+    { "model": "Pixel 8",          "size": 6.2, "resolution": "2400x1080", "ppi": 428, "key": "phone" },
+    { "model": "Pixel 8 Pro",      "size": 6.7, "resolution": "3120x1440", "ppi": 489, "key": "phone" },
+    { "model": "Pixel 9",          "size": 6.3, "resolution": "2400x1080", "ppi": 428, "key": "phone" },
+    { "model": "Pixel 9 Pro",      "size": 6.7, "resolution": "3120x1440", "ppi": 489, "key": "phone" },
+    { "model": "Pixel 9 Pro Fold", "size": 7.6, "resolution": "2208x1840", "ppi": 378, "key": "foldable_phone" },
+    { "model": "Pixel 10",         "size": 6.3, "resolution": "2400x1080", "ppi": 428, "key": "phone" },
+    { "model": "Pixel 10 Pro",     "size": 6.7, "resolution": "3120x1440", "ppi": 500, "key": "phone" },
+    { "model": "Pixel 10 Pro Fold","size": 7.6, "resolution": "2208x1840", "ppi": 378, "key": "foldable_phone" }
+  ],
+  "Google Tablets": [
+    { "model": "Pixel Tablet 11\"", "size": 11.0, "resolution": "2560x1600", "ppi": 276, "key": "tablet_10" }
+  ],
+  "Xiaomi Phones": [
+    { "model": "Xiaomi 13",       "size": 6.4, "resolution": "2400x1080", "ppi": 418, "key": "phone" },
+    { "model": "Xiaomi 13 Ultra", "size": 6.7, "resolution": "3200x1440", "ppi": 522, "key": "phone" },
+    { "model": "Xiaomi 14",       "size": 6.4, "resolution": "2670x1200", "ppi": 460, "key": "phone" },
+    { "model": "Xiaomi 15",       "size": 6.4, "resolution": "2670x1200", "ppi": 460, "key": "phone" },
+    { "model": "Xiaomi 15 Ultra", "size": 6.7, "resolution": "3200x1440", "ppi": 522, "key": "phone" }
+  ],
+  "Xiaomi Tablets": [
+    { "model": "Xiaomi Pad 6",   "size": 11.0, "resolution": "2880x1800", "ppi": 309, "key": "tablet_10" },
+    { "model": "Xiaomi Pad 7 Pro","size": 11.2, "resolution": "3040x1964", "ppi": 320, "key": "tablet_10" }
+  ],
+  "Oppo Phones": [
+    { "model": "Oppo Find X6 Pro",  "size": 6.8, "resolution": "3168x1440", "ppi": 510, "key": "phone" },
+    { "model": "Oppo Find X7 Ultra","size": 6.8, "resolution": "3168x1440", "ppi": 510, "key": "phone" },
+    { "model": "Oppo Find N2 Flip", "size": 6.8, "resolution": "2520x1080", "ppi": 403, "key": "foldable_phone" },
+    { "model": "Oppo Find N3",      "size": 7.8, "resolution": "2268x2440", "ppi": 413, "key": "foldable_phone" }
+  ],
+  "Oppo Tablets": [
+    { "model": "Oppo Pad 2",    "size": 11.6, "resolution": "2800x2000", "ppi": 296, "key": "tablet_12" },
+    { "model": "Oppo Pad SE",   "size": 10.4, "resolution": "2000x1200", "ppi": 224, "key": "tablet_10" }
+  ],
+  "Realme Phones": [
+    { "model": "Realme 11 Pro",    "size": 6.7, "resolution": "2412x1080", "ppi": 394, "key": "phone" },
+    { "model": "Realme 12 Pro",    "size": 6.7, "resolution": "2412x1080", "ppi": 394, "key": "phone" },
+    { "model": "Realme GT3",       "size": 6.7, "resolution": "2772x1240", "ppi": 451, "key": "phone" }
+  ],
+  "Realme Tablets": [
+    { "model": "Realme Pad 2", "size": 11.5, "resolution": "2000x1200", "ppi": 213, "key": "tablet_10" }
+  ],
+  "Amazon Kindle Ereaders": [
+    { "model": "Kindle 11th Gen 6\"", "size": 6.0, "resolution": "1448x1072", "ppi": 300, "key": "ereader" },
+    { "model": "Kindle Paperwhite 6.8\"", "size": 6.8, "resolution": "1236x1648", "ppi": 300, "key": "ereader" },
+    { "model": "Kindle Scribe 10.2\"", "size": 10.2, "resolution": "1860x2480", "ppi": 300, "key": "ereader" },
+    { "model": "Kindle Colorsoft 7\"", "size": 7.0, "resolution": "1680x1264", "ppi": 300, "key": "ereader" }
+  ],
+  "Kobo Ereaders": [
+    { "model": "Kobo Clara BW 6\"",   "size": 6.0, "resolution": "1448x1072", "ppi": 300, "key": "ereader" },
+    { "model": "Kobo Clara Colour 6\"", "size": 6.0, "resolution": "1448x1072", "ppi": 300, "key": "ereader" },
+    { "model": "Kobo Libra Colour 7\"", "size": 7.0, "resolution": "1680x1264", "ppi": 300, "key": "ereader" },
+    { "model": "Kobo Elipsa 2E 10.3\"", "size": 10.3, "resolution": "1872x1404", "ppi": 227, "key": "ereader" }
+  ],
+  "Boox Ereaders": [
+    { "model": "Boox Tab X 13.3\"",   "size": 13.3, "resolution": "2200x1650", "ppi": 207, "key": "ereader" },
+    { "model": "Boox Tab Ultra C 10.3\"", "size": 10.3, "resolution": "1872x1404", "ppi": 227, "key": "ereader" },
+    { "model": "Boox Note Air3 C 10.3\"", "size": 10.3, "resolution": "1872x1404", "ppi": 227, "key": "ereader" },
+    { "model": "Boox Palma 6\"",      "size": 6.0, "resolution": "1448x1072", "ppi": 300, "key": "ereader" }
+  ],
+  "reMarkable Ereaders": [
+    { "model": "reMarkable 2 10.3\"", "size": 10.3, "resolution": "1872x1404", "ppi": 226, "key": "ereader" }
+  ]
+}
