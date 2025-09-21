@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+export LC_ALL=C  
 
 get_version() {
     grep -E '^pkgver=' PKGBUILD | head -1 | cut -d '=' -f2
@@ -26,9 +27,6 @@ if [ -z "$RELEASE" ]; then
     exit 1
 fi
 echo "Detected version: $VERSION-$RELEASE"
-
-echo "Installing build dependencies..."
-sudo pacman -S --needed python python-build python-installer python-wheel python-setuptools
 
 echo "Cleaning old build files..."
 cd ..

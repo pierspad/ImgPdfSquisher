@@ -1,4 +1,4 @@
-# Maintainer: pierspad <pierpaolospadafora@proton.me>
+# Maintainer: pierspad
 pkgname=imgpdfsquisher
 pkgver=1.0.0
 pkgrel=1
@@ -6,34 +6,57 @@ pkgdesc="A Python GUI application for reducing the filesize of PDF with high res
 arch=('any')
 url="https://github.com/pierspad/imgpdfsquisher"
 license=('MIT')
-depends=('python' 'poppler' 'pillow' 'reportlab' 'charset-normalizer' 'PySide6')
-makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
-optdepends=('python-pip: for installing optional dependencies like nbformat for Jupyter notebook support')
+
+depends=(
+  'python'
+  'poppler'
+  'python-pillow'
+  'python-reportlab'
+  'python-charset-normalizer'
+  'pyside6'
+  # ATTENZIONE: python-pdf2image è spesso su AUR.
+  # Lascialo qui se vuoi richiederlo come dipendenza,
+  # ma l'utente dovrà installarlo da AUR prima di makepkg.
+  'python-pdf2image'
+)
+
+makedepends=()  # non costruiamo wheel
+optdepends=('python-pip: per installare plugin opzionali')
+
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
-sha256sums=('6016349bb90bedc0df238d2f7ab2c92b754cb3e64db51f445b1840cf7b22db4e')
+sha256sums=('70957fa5047f4b779b7ea1aec7b7d805cdda220b72cf61860e720cd9c5dfa8a5')
 
 prepare() {
-  cd "$srcdir/imgpdfsquisher-$pkgver"
+  cd "$srcdir/$pkgname-$pkgver"
 }
 
-build() {
-  cd "$srcdir/imgpdfsquisher-$pkgver"
-  unset VIRTUAL_ENV
-  export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
-  /usr/bin/python -m build --wheel --no-isolation
-}
+# niente build()
 
 check() {
-  cd "$srcdir/imgpdfsquisher-$pkgver"
+  cd "$srcdir/$pkgname-$pkgver"
+  # opzionale: python -m py_compile su file critici
 }
 
 package() {
-  cd "$srcdir/imgpdfsquisher-$pkgver"
-  /usr/bin/python -m installer --destdir="$pkgdir" dist/*.whl
+  cd "$srcdir/$pkgname-$pkgver"
 
-  install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  # Installa i sorgenti "così come sono" sotto /usr/lib/imgpdfsquisher
+  install -d "$pkgdir/usr/lib/$pkgname"
+  cp -r ./* "$pkgdir/usr/lib/$pkgname/"
 
+  # Wrapper binario in PATH
+  install -d "$pkgdir/usr/bin"
+  cat > "$pkgdir/usr/bin/$pkgname" << 'EOF'
+#!/usr/bin/env bash
+# Avvia l'app come modulo Python. Richiede __main__.py nel package.
+exec /usr/bin/python -m imgpdfsquisher "$@"
+EOF
+  chmod 755 "$pkgdir/usr/bin/$pkgname"
+
+  # Desktop file e icona
   install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
-
   install -Dm644 imgpdfsquisher/assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
+
+  # Licenza
+  install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
