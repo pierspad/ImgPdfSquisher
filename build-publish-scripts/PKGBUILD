@@ -1,4 +1,4 @@
-# Maintainer: pierspad <pierpaolospadafora@proton.me>
+# Maintainer: pierspad
 pkgname=imgpdfsquisher
 pkgver=1.0.0
 pkgrel=1
@@ -6,11 +6,31 @@ pkgdesc="A Python GUI application for reducing the filesize of PDF with high res
 arch=('any')
 url="https://github.com/pierspad/imgpdfsquisher"
 license=('MIT')
-depends=('python' 'poppler')
-makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
-optdepends=('python-pip: for installing optional dependencies like nbformat for Jupyter notebook support')
+
+# Dipendenze runtime (nomi corretti per Arch)
+depends=(
+  'python'
+  'poppler'
+  'python-pillow'
+  'python-reportlab'
+  'python-charset-normalizer'
+  'python-pdf2image'
+  'pyside6'
+)
+
+makedepends=(
+  'python-build'
+  'python-installer'
+  'python-wheel'
+  'python-setuptools'
+)
+
+optdepends=(
+  'python-pip: per installare dipendenze opzionali come nbformat per il supporto Jupyter'
+)
+
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
-sha256sums=('daee057808e457e2737210741343a40e219df35f8525f177106e4360e762cdb4')
+sha256sums=('df252a3c4870e1e68bdaa08c449c5ff63310c84fa2baacda6199ebb1f3427a61')
 
 prepare() {
   cd "$srcdir/imgpdfsquisher-$pkgver"
@@ -32,8 +52,6 @@ package() {
   /usr/bin/python -m installer --destdir="$pkgdir" dist/*.whl
 
   install -Dm644 docs/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-
   install -Dm644 packaging/imgpdfsquisher.desktop "$pkgdir/usr/share/applications/imgpdfsquisher.desktop"
-
   install -Dm644 imgpdfsquisher/assets/logo/logo.png "$pkgdir/usr/share/pixmaps/imgpdfsquisher.png"
 }

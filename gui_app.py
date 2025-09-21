@@ -300,7 +300,138 @@ class MangaCompressorGUI(QWidget):
         self._save_timer = QTimer(self)
         self._save_timer.setSingleShot(True)
         self._save_timer.timeout.connect(self._persist_defaults_now)
-        self.i18n = {'en': {'window_title': 'Manga PDF Compressor', 'add': ' Add…', 'remove': ' Remove selected', 'clear': ' Clear', 'output_dir': 'Output dir:', 'temp_dir': 'Temp dir:', 'device': 'Device:', 'brand': 'Brand:', 'model': 'Model:', 'mode': 'Mode:', 'quality': 'Quality:', 'max_colors': 'Max colors:', 'workers': 'Workers:', 'ram': 'RAM %:', 'save_defaults': 'Save as default', 'start': ' Start', 'stop': ' Stop', 'theme': 'Theme', 'light': ' Light', 'dark': ' Dark', 'language_label': 'Language:', 'language_btn': ' EN', 'open_output': ' Open Output Folder', 'select_pdfs_title': 'Select PDF files', 'pdf_filter': 'PDF Files (*.pdf)', 'choose_dir': 'Choose directory', 'no_files_title': 'No files', 'add_at_least': 'Please add at least one PDF file.', 'params_title': 'Parameters', 'quality_range': 'Quality must be between 1 and 100.', 'max_colors_range': 'Max-colors power P must be between 1 and 8 (2^P = 2..256).', 'workers_limit': 'Maximum allowed workers: {cpu}.', 'ram_range': 'RAM % must be between 10 and 95.', 'defaults_saved': 'Defaults saved.', 'cannot_save_defaults': 'Cannot save defaults: {err}', 'all_done': 'All done.', 'drag_hint': "Drag PDF files here or use 'Add'", 'toggle_theme': 'Toggle light/dark theme', 'toggle_language': 'Change language', 'toggle_mode': 'Simple/Advanced', 'simple_mode': 'Simple mode', 'advanced_mode': 'Advanced mode', 'presets': 'Presets:', 'preset_ultra': 'Ultra', 'preset_very_high': 'Very High', 'preset_high': 'High', 'preset_normal': 'Normal', 'preset_low': 'Low', 'preset_very_low': 'Very Low', 'preset_minimal': 'Minimal', 'custom_device_section': 'Optional target device', 'custom_device_use': ' Use custom device', 'custom_name': 'Name', 'custom_inches': 'Diagonal (in)', 'custom_resolution': 'Resolution (px)', 'custom_dpi': 'DPI', 'suggest_prefix': 'Suggestion:', 'estimate_label': 'Estimated size:', 'apply_suggestion': 'Apply suggestion', 'apply_suggestion_tip': 'Set presets to the suggested quality level'}, 'it': {'window_title': 'Manga PDF Compressor', 'add': ' Aggiungi…', 'remove': ' Rimuovi selezionati', 'clear': ' Svuota', 'output_dir': 'Cartella di output:', 'temp_dir': 'Cartella temporanea:', 'device': 'Dispositivo:', 'brand': 'Marca:', 'model': 'Modello:', 'mode': 'Modalità:', 'quality': 'Qualità:', 'max_colors': 'Colori massimi:', 'workers': 'Processi:', 'ram': 'RAM %:', 'save_defaults': 'Salva come default', 'start': ' Avvia', 'stop': ' Stop', 'theme': 'Tema', 'light': ' Chiaro', 'dark': ' Scuro', 'language_label': 'Lingua:', 'language_btn': ' IT', 'open_output': ' Apri Cartella Di Output', 'select_pdfs_title': 'Seleziona file PDF', 'pdf_filter': 'File PDF (*.pdf)', 'choose_dir': 'Scegli cartella', 'no_files_title': 'Nessun file', 'add_at_least': 'Aggiungi almeno un file PDF.', 'params_title': 'Parametri', 'quality_range': 'La qualità deve essere tra 1 e 100.', 'max_colors_range': 'La potenza deve essere tra 1 e 8 (2^P = 2..256).', 'workers_limit': 'Processi massimi consentiti: {cpu}.', 'ram_range': 'RAM % deve essere tra 10 e 95.', 'defaults_saved': 'Default salvati.', 'cannot_save_defaults': 'Impossibile salvare i default: {err}', 'all_done': 'Completato.', 'drag_hint': "Trascina qui i file PDF oppure usa 'Aggiungi'", 'toggle_theme': 'Cambia tema chiaro/scuro', 'toggle_language': 'Cambia lingua', 'toggle_mode': 'Semplice/Avanzata', 'simple_mode': 'Modalità semplice', 'advanced_mode': 'Modalità avanzata', 'presets': 'Preimpostazioni:', 'preset_ultra': 'Ultra', 'preset_very_high': 'Molto Alta', 'preset_high': 'Alta', 'preset_normal': 'Normale', 'preset_low': 'Bassa', 'preset_very_low': 'Molto Bassa', 'preset_minimal': 'Minima', 'custom_device_section': 'Dispositivo di destinazione (opzionale)', 'custom_device_use': ' Usa device personalizzato', 'custom_name': 'Nome', 'custom_inches': 'Diagonale (pollici)', 'custom_resolution': 'Risoluzione (px)', 'custom_dpi': 'DPI', 'suggest_prefix': 'Suggerimento:', 'estimate_label': 'Stima dimensione:', 'apply_suggestion': 'Applica suggerimento', 'apply_suggestion_tip': 'Imposta i preset al livello di qualità suggerito'}}
+        self.i18n = {
+            'en': {
+                'window_title': 'Manga PDF Compressor',
+                'add': ' Add…',
+                'remove': ' Remove selected',
+                'clear': ' Clear',
+                'output_dir': 'Output dir:',
+                'temp_dir': 'Temp dir:',
+                'device': 'Device:',
+                'brand': 'Brand:',
+                'model': 'Model:',
+                'mode': 'Mode:',
+                'quality': 'Quality:',
+                'max_colors': 'Max colors:',
+                'workers': 'Workers:',
+                'ram': 'RAM %:',
+                'save_defaults': 'Save as default',
+                'start': ' Start',
+                'stop': ' Stop',
+                'theme': 'Theme',
+                'light': ' Light',
+                'dark': ' Dark',
+                'language_label': 'Language:',
+                'language_btn': ' EN',
+                'open_output': ' Open Output Folder',
+                'select_pdfs_title': 'Select PDF files',
+                'pdf_filter': 'PDF Files (*.pdf)',
+                'choose_dir': 'Choose directory',
+                'no_files_title': 'No files',
+                'add_at_least': 'Please add at least one PDF file.',
+                'params_title': 'Parameters',
+                'quality_range': 'Quality must be between 1 and 100.',
+                'max_colors_range': 'Max-colors power P must be between 1 and 8 (2^P = 2..256).',
+                'workers_limit': 'Maximum allowed workers: {cpu}.',
+                'ram_range': 'RAM % must be between 10 and 95.',
+                'defaults_saved': 'Defaults saved.',
+                'cannot_save_defaults': 'Cannot save defaults: {err}',
+                'all_done': 'All done.',
+                'drag_hint': "Drag PDF files here or use 'Add'",
+                'toggle_theme': 'Toggle light/dark theme',
+                'toggle_language': 'Change language',
+                'toggle_mode': 'Simple/Advanced',
+                'simple_mode': 'Simple mode',
+                'advanced_mode': 'Advanced mode',
+                'presets': 'Presets:',
+                'preset_ultra': 'Ultra',
+                'preset_very_high': 'Very High',
+                'preset_high': 'High',
+                'preset_normal': 'Normal',
+                'preset_low': 'Low',
+                'preset_very_low': 'Very Low',
+                'preset_minimal': 'Minimal',
+                'custom_device_section': 'Optional target device',
+                'custom_device_use': ' Use custom device',
+                'custom_name': 'Name',
+                'custom_inches': 'Diagonal (in)',
+                'custom_resolution': 'Resolution (px)',
+                'custom_dpi': 'DPI',
+                'suggest_prefix': 'Suggestion:',
+                'estimate_label': 'Estimated size:',
+                'apply_suggestion': 'Apply suggestion',
+                'apply_suggestion_tip': 'Set presets to the suggested quality level',
+                'preview_title': 'Quality preview',
+                'preview_original': 'Original',
+                'preview_compressed': 'Compressed',
+            },
+            'it': {
+                'window_title': 'Manga PDF Compressor',
+                'add': ' Aggiungi…',
+                'remove': ' Rimuovi selezionati',
+                'clear': ' Svuota',
+                'output_dir': 'Cartella di output:',
+                'temp_dir': 'Cartella temporanea:',
+                'device': 'Dispositivo:',
+                'brand': 'Marca:',
+                'model': 'Modello:',
+                'mode': 'Modalità:',
+                'quality': 'Qualità:',
+                'max_colors': 'Colori massimi:',
+                'workers': 'Processi:',
+                'ram': 'RAM %:',
+                'save_defaults': 'Salva come default',
+                'start': ' Avvia',
+                'stop': ' Stop',
+                'theme': 'Tema',
+                'light': ' Chiaro',
+                'dark': ' Scuro',
+                'language_label': 'Lingua:',
+                'language_btn': ' IT',
+                'open_output': ' Apri Cartella Di Output',
+                'select_pdfs_title': 'Seleziona file PDF',
+                'pdf_filter': 'File PDF (*.pdf)',
+                'choose_dir': 'Scegli cartella',
+                'no_files_title': 'Nessun file',
+                'add_at_least': 'Aggiungi almeno un file PDF.',
+                'params_title': 'Parametri',
+                'quality_range': 'La qualità deve essere tra 1 e 100.',
+                'max_colors_range': 'La potenza deve essere tra 1 e 8 (2^P = 2..256).',
+                'workers_limit': 'Processi massimi consentiti: {cpu}.',
+                'ram_range': 'RAM % deve essere tra 10 e 95.',
+                'defaults_saved': 'Default salvati.',
+                'cannot_save_defaults': 'Impossibile salvare i default: {err}',
+                'all_done': 'Completato.',
+                'drag_hint': "Trascina qui i file PDF oppure usa 'Aggiungi'",
+                'toggle_theme': 'Cambia tema chiaro/scuro',
+                'toggle_language': 'Cambia lingua',
+                'toggle_mode': 'Semplice/Avanzata',
+                'simple_mode': 'Modalità semplice',
+                'advanced_mode': 'Modalità avanzata',
+                'presets': 'Preimpostazioni:',
+                'preset_ultra': 'Ultra',
+                'preset_very_high': 'Molto Alta',
+                'preset_high': 'Alta',
+                'preset_normal': 'Normale',
+                'preset_low': 'Bassa',
+                'preset_very_low': 'Molto Bassa',
+                'preset_minimal': 'Minima',
+                'custom_device_section': 'Dispositivo di destinazione (opzionale)',
+                'custom_device_use': ' Usa device personalizzato',
+                'custom_name': 'Nome',
+                'custom_inches': 'Diagonale (pollici)',
+                'custom_resolution': 'Risoluzione (px)',
+                'custom_dpi': 'DPI',
+                'suggest_prefix': 'Suggerimento:',
+                'estimate_label': 'Stima dimensione:',
+                'apply_suggestion': 'Applica suggerimento',
+                'apply_suggestion_tip': 'Imposta i preset al livello di qualità suggerito',
+                'preview_title': 'Anteprima qualità',
+                'preview_original': 'Originale',
+                'preview_compressed': 'Compressa',
+            }
+        }
         self._build_ui()
         self._load_defaults_into_ui()
         self.apply_theme(self.theme)
@@ -685,8 +816,19 @@ class MangaCompressorGUI(QWidget):
                 self.preview_view2.set_pixmap(comp_pm if not comp_pm.isNull() else QPixmap())
             except Exception:
                 pass
-            labels_it = {'minimal': '1 - Minima', 'very_low': '2 - Molto Bassa', 'low': '3 - Bassa', 'normal': '4 - Normale', 'high': '5 - Alta', 'very_high': '6 - Molto Alta', 'ultra': '7 - Ultra'}
-            self.preview_level_label.setText(labels_it.get(preset_key, preset_key.title()))
+            # Build localized level label: "N - <PresetName>"
+            order_map = {
+                'minimal': 1,
+                'very_low': 2,
+                'low': 3,
+                'normal': 4,
+                'high': 5,
+                'very_high': 6,
+                'ultra': 7,
+            }
+            n = order_map.get(preset_key)
+            label = self._preset_label_localized(preset_key)
+            self.preview_level_label.setText(f"{n} - {label}" if n else label)
         except Exception:
             pass
 
@@ -809,6 +951,13 @@ class MangaCompressorGUI(QWidget):
         self.setWindowTitle(t['window_title'])
         for btn in self.findChildren(QPushButton):
             pass
+        # Preview titles and labels
+        if hasattr(self, 'preview_title'):
+            self.preview_title.setText(t.get('preview_title', self.preview_title.text()))
+        if hasattr(self, 'preview_label1'):
+            self.preview_label1.setText(t.get('preview_original', self.preview_label1.text()))
+        if hasattr(self, 'preview_label2'):
+            self.preview_label2.setText(t.get('preview_compressed', self.preview_label2.text()))
         self.files_list.setToolTip(t['drag_hint'])
         add_btn = self.findChild(QPushButton, 'addButton')
         if add_btn:
@@ -864,6 +1013,12 @@ class MangaCompressorGUI(QWidget):
         try:
             if getattr(self, '_last_loaded_file', None):
                 self._update_suggestion(self._last_loaded_file)
+        except Exception:
+            pass
+        # Refresh bottom preview level label according to the selected preset
+        try:
+            p = self._current_preset_key() or 'normal'
+            self._update_previews(p)
         except Exception:
             pass
 
