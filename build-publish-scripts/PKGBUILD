@@ -20,19 +20,20 @@ depends=(
 makedepends=()
 optdepends=('python-pip: per installare plugin opzionali')
 
-source=("$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/v$pkgver.tar.gz")
-sha256sums=('c477b79f4e6dc4aa05a921004a9fa0741d298f53cdf6e8508463ae8bcdfb54a7')
+source=("$pkgname-$pkgver.tar.gz")
+# Lo script di build aggiornerà automaticamente questo valore con updpkgsums
+sha256sums=('25e0eec99ffff3e57222fee0f5ac2379056df69d7b71fa0adff4153928ad2b47')
 
 prepare() {
-  cd "$srcdir/ImgPdfSquisher-$pkgver"
+  cd "$srcdir/imgpdfsquisher-$pkgver"
 }
 
 check() {
-  cd "$srcdir/ImgPdfSquisher-$pkgver"
+  cd "$srcdir/imgpdfsquisher-$pkgver"
 }
 
 package() {
-  cd "$srcdir/ImgPdfSquisher-$pkgver"
+  cd "$srcdir/imgpdfsquisher-$pkgver"
 
   install -d "$pkgdir/usr/lib/$pkgname"
   

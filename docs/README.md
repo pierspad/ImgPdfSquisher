@@ -80,7 +80,7 @@ Notes
 
 Devices
     Full and up-to-date list is maintained here:
-    https://github.com/pierspad/ImgPdfSquisher/blob/main/assets/devices.json
+    https://github.com/pierspad/imgpdfsquisher/blob/main/assets/devices.json
 
 Modes
     auto         Automatically picks BW, Grayscale or Color per image for best size/quality

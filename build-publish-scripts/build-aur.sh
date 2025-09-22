@@ -1,6 +1,9 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 export LC_ALL=C  
+
+# Posizionarsi nella directory dello script per lavorare con PKGBUILD locale
+cd "$(dirname "$0")"
 
 get_version() {
     grep -E '^pkgver=' PKGBUILD | head -1 | cut -d '=' -f2
@@ -31,7 +34,10 @@ echo "Detected version: $VERSION-$RELEASE"
 echo "Cleaning old build files..."
 cd ..
 
-rm -rf build/ dist/ *.egg-info/ **/__pycache__/ **/*.pyc
+# Rimozione mirata senza globstar ricorsivi fragili
+rm -rf build dist ./*.egg-info
+find . -type d -name __pycache__ -prune -exec rm -rf {} +
+find . -type f -name "*.pyc" -delete
 echo "Cleaned old build files"
 
 echo "Preparing source package..."
@@ -71,8 +77,14 @@ cd build-publish-scripts
 updpkgsums
 
 echo "Building Arch package..."
-makepkg -sf
+makepkg -sfc
 
 echo ""
+PKG_FILE="imgpdfsquisher-$VERSION-$RELEASE-any.pkg.tar.zst"
+if [ ! -f "$PKG_FILE" ]; then
+    echo "Error: Package file $PKG_FILE not found. build failed?"
+    ls -lah
+    exit 1
+fi
 echo "Build completed! Install with:"
-echo "sudo pacman -U imgpdfsquisher-$VERSION-$RELEASE-any.pkg.tar.zst"
+echo "sudo pacman -U $PKG_FILE"
