@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import math
+import time
 from pathlib import Path
 from threading import Thread
 from typing import Optional
@@ -299,7 +300,6 @@ class MangaCompressorGUI(QWidget):
                 'ram_limit': 75,
                 'suffix': None,
                 'out_dir': '',
-                'tmp_dir': '',
                 'theme': 'dark',
                 'language': 'en',
                 'ui_mode': 'simple',
@@ -318,7 +318,20 @@ class MangaCompressorGUI(QWidget):
         self._load_defaults_into_ui()
         self.apply_theme(self.theme)
         self.apply_language(self.language)
-        self.worker: Optional[CompressorWorker] = None
+        self.worker = None  # type: ignore
+        # progress animation controller (per-segment)
+        self._progress_timer = QTimer(self)
+        self._progress_timer.setInterval(50)
+        self._progress_timer.timeout.connect(self._on_progress_tick)
+        self._progress_file_sizes = []
+        self._progress_total_bytes = 0
+        self._anim_total_files = 0
+        self._anim_index = 0
+        self._anim_seg_start_time = 0.0
+        self._anim_seg_target_dur = 0.0
+        self._anim_seg_start_frac = 0.0
+        self._anim_seg_end_frac = 0.0
+        self._display_count = 0
 
     def _build_ui(self):
         root = QHBoxLayout(self)
@@ -416,9 +429,7 @@ class MangaCompressorGUI(QWidget):
         files_row.addLayout(files_col)
         layout.addLayout(files_row)
         self.out_dir_edit = QLineEdit()
-        self.tmp_dir_edit = QLineEdit()
         self.out_dir_edit.setPlaceholderText(str((Path.cwd() / 'compressed').resolve()))
-        self.tmp_dir_edit.setPlaceholderText(str((Path.cwd() / 'tmp').resolve()))
         out_row = QHBoxLayout()
         self.lbl_out = QLabel()
         self.lbl_out.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -430,17 +441,6 @@ class MangaCompressorGUI(QWidget):
         self.out_btn.setIcon(self._icon('folder-open'))
         out_row.addWidget(self.out_btn)
         layout.addLayout(out_row)
-        tmp_row = QHBoxLayout()
-        self.lbl_tmp = QLabel()
-        self.lbl_tmp.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        tmp_row.addWidget(self.lbl_tmp)
-        tmp_row.addWidget(self.tmp_dir_edit, 1)
-        self.tmp_btn = QPushButton()
-        self.tmp_btn.setObjectName('tmpButton')
-        self.tmp_btn.clicked.connect(lambda: self.choose_dir(self.tmp_dir_edit))
-        self.tmp_btn.setIcon(self._icon('folder-open'))
-        tmp_row.addWidget(self.tmp_btn)
-        layout.addLayout(tmp_row)
         self.simple_panel = QWidget()
         sp_v = QVBoxLayout(self.simple_panel)
         sp_v.setContentsMargins(0, 0, 0, 0)
@@ -632,6 +632,10 @@ class MangaCompressorGUI(QWidget):
         layout.addLayout(ac_wrap)
         self.progress = QProgressBar()
         self.progress.setRange(0, 100)
+        try:
+            self.progress.setTextVisible(True)
+        except Exception:
+            pass
         layout.addWidget(self.progress)
         log_container = QVBoxLayout()
         log_header = QHBoxLayout()
@@ -654,6 +658,13 @@ class MangaCompressorGUI(QWidget):
         self.start_btn.setObjectName('startButton')
         self.start_btn.setIcon(self._icon('play'))
         self.start_btn.clicked.connect(self.on_start)
+        try:
+            # evitiamo casi in cui il bottone risulti visivamente attivo ma non riceva click (overlay/stacking)
+            self.start_btn.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+            from PySide6.QtCore import Qt as _Qt
+            self.start_btn.setFocusPolicy(_Qt.StrongFocus)
+        except Exception:
+            pass
         self.stop_btn = QPushButton(' Stop')
         self.stop_btn.setObjectName('stopButton')
         self.stop_btn.setIcon(self._icon('stop'))
@@ -698,12 +709,69 @@ class MangaCompressorGUI(QWidget):
         # Validazione cartelle e abilitazione Start
         try:
             self.out_dir_edit.textChanged.connect(self._validate_dirs_enable_start)
-            self.tmp_dir_edit.textChanged.connect(self._validate_dirs_enable_start)
         except Exception:
             pass
         # stato iniziale dei bottoni
         self._update_files_buttons_state()
         self._validate_dirs_enable_start()
+
+    def _init_progress_tracking(self, files: list[str]):
+        try:
+            # Pesa i file per dimensione per stima durate e crea segmenti
+            sizes = []
+            for f in files:
+                try:
+                    s = int(Path(f).stat().st_size)
+                except Exception:
+                    s = 1
+                sizes.append(max(1, s))
+            self._progress_file_sizes = sizes
+            self._progress_total_bytes = sum(sizes)
+            self._progress_n_files = len(files)
+            # Setup animazione a segmenti
+            self._anim_total_files = self._progress_n_files
+            self._anim_index = 0
+            self._display_count = 0
+            self._anim_step = (100.0 / max(1, self._anim_total_files)) if self._anim_total_files > 0 else 0.0
+            now = time.monotonic()
+            self._anim_seg_start_time = now
+            self._anim_seg_target_dur = 20.0 if self._anim_total_files > 0 else 0.0  # ~20s primo pezzo
+            # segmenti: [i/N, (i+1)/N]
+            start_frac = 0.0
+            end_frac = self._anim_step
+            self._anim_seg_start_frac = start_frac
+            self._anim_seg_end_frac = end_frac
+            # configura progress bar
+            self.progress.setRange(0, 100)
+            self.progress.setValue(0)
+            self.progress.setFormat(f"{self._display_count}/{self._anim_total_files}")
+            # avvia timer animazione
+            self._progress_timer.start()
+        except Exception:
+            pass
+
+    def _on_progress_tick(self):
+        try:
+            # Animazione lineare del segmento corrente
+            N = max(1, int(self._anim_total_files))
+            if N <= 0:
+                self.progress.setValue(0)
+                self.progress.setFormat("0/0")
+                return
+            now = time.monotonic()
+            elapsed = max(0.0, now - float(self._anim_seg_start_time))
+            dur = max(0.001, float(self._anim_seg_target_dur))
+            t = min(1.0, elapsed / dur)
+            start_v = float(self._anim_seg_start_frac)
+            end_v = float(self._anim_seg_end_frac)
+            cur = start_v + (end_v - start_v) * t
+            # Non oltrepassare il bordo del segmento finché non arriva file_done
+            cur = min(cur, end_v)
+            self.progress.setValue(int(round(cur)))
+            # Etichetta: conteggio file completati
+            self.progress.setFormat(f"{self._display_count}/{self._anim_total_files}")
+        except Exception:
+            pass
 
     def _build_preview_panel(self, root_layout):
         from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout
@@ -785,7 +853,6 @@ class MangaCompressorGUI(QWidget):
     def _load_defaults_into_ui(self):
         d = self.defaults
         out_dir = d.get('out_dir')
-        tmp_dir = d.get('tmp_dir')
         # se vuoti (prima esecuzione) lascia i campi vuoti
         if out_dir:
             try:
@@ -794,13 +861,6 @@ class MangaCompressorGUI(QWidget):
                 self.out_dir_edit.setText(out_dir)
         else:
             self.out_dir_edit.setText('')
-        if tmp_dir:
-            try:
-                self.tmp_dir_edit.setText(str(Path(tmp_dir).resolve()))
-            except Exception:
-                self.tmp_dir_edit.setText(tmp_dir)
-        else:
-            self.tmp_dir_edit.setText('')
         device = d.get('device', 'tablet_10')
         mode = d.get('mode', 'auto')
         self._set_combo_by_data(self.device_combo, device)
@@ -885,16 +945,17 @@ class MangaCompressorGUI(QWidget):
         try:
             t = self.i18n[self.language]
             if hasattr(self, 'theme_btn'):
-                self.theme_btn.setText(t['light'] if theme == 'light' else t['dark'])
+                # Mostra l'azione: clic su "Dark" imposta tema scuro, e viceversa
+                self.theme_btn.setText(t['dark'] if theme == 'light' else t['light'])
             if hasattr(self, 'mode_btn'):
                 self.mode_btn.setIcon(self._icon('advanced' if self.ui_mode == 'advanced' else 'simple'))
         except Exception:
             pass
-        for btn_name in ('addButton', 'removeButton', 'clearButton', 'outButton', 'tmpButton', 'startButton', 'openOutputButton', 'themeButton', 'uiModeButton', 'clearLogButton'):
+        for btn_name in ('addButton', 'removeButton', 'clearButton', 'outButton', 'startButton', 'openOutputButton', 'themeButton', 'uiModeButton', 'clearLogButton'):
             b = self.findChild(QPushButton, btn_name)
             if not b:
                 continue
-            icon_map = {'addButton': 'file-plus', 'removeButton': 'trash', 'clearButton': 'trash', 'outButton': 'folder-open', 'tmpButton': 'folder-open', 'startButton': 'play', 'openOutputButton': 'folder-open', 'themeButton': 'sun' if theme == 'light' else 'moon', 'uiModeButton': 'advanced' if self.ui_mode == 'advanced' else 'simple', 'clearLogButton': 'trash'}
+            icon_map = {'addButton': 'file-plus', 'removeButton': 'trash', 'clearButton': 'trash', 'outButton': 'folder-open', 'startButton': 'play', 'openOutputButton': 'folder-open', 'themeButton': 'sun' if theme == 'light' else 'moon', 'uiModeButton': 'advanced' if self.ui_mode == 'advanced' else 'simple', 'clearLogButton': 'trash'}
             b.setIcon(self._icon(icon_map.get(btn_name, 'folder-open')))
         try:
             rb = self.findChild(QPushButton, 'removeButton')
@@ -940,9 +1001,7 @@ class MangaCompressorGUI(QWidget):
         if clear_btn:
             clear_btn.setText(t['clear'])
         self.lbl_out.setText(t['output_dir'])
-        self.lbl_tmp.setText(t['temp_dir'])
         self.out_btn.setText(' Output…')
-        self.tmp_btn.setText(' Temp…')
         self.lbl_device.setText(t['device'])
         self.lbl_mode.setText(t['mode'])
         # Refresh localized labels of compression modes while keeping the selected key
@@ -955,7 +1014,8 @@ class MangaCompressorGUI(QWidget):
         self.start_btn.setText(t['start'])
         self.stop_btn.setText(t['stop'])
         if hasattr(self, 'theme_btn'):
-            self.theme_btn.setText(t['light'] if self.theme == 'light' else t['dark'])
+            # Mostra l'azione: se il tema attuale è light, proponi "Dark" e viceversa
+            self.theme_btn.setText(t['dark'] if self.theme == 'light' else t['light'])
         self.theme_btn.setToolTip(t['toggle_theme'])
         # Language combo label/tooltip
         try:
@@ -967,7 +1027,8 @@ class MangaCompressorGUI(QWidget):
         except Exception:
             pass
         self.open_output_btn.setText(t['open_output'])
-        self.mode_btn.setText(' ' + (t['advanced_mode'] if self.ui_mode == 'advanced' else t['simple_mode']))
+        # Mostra l'azione: se sei in advanced, proponi "Simple" e viceversa
+        self.mode_btn.setText(' ' + (t['simple_mode'] if self.ui_mode == 'advanced' else t['advanced_mode']))
         self.mode_btn.setToolTip(t['toggle_mode'])
         if hasattr(self, 'lbl_custom_section'):
             self.lbl_custom_section.setText(t['custom_device_section'])
@@ -1143,19 +1204,17 @@ class MangaCompressorGUI(QWidget):
             t = self.i18n[self.language]
             QMessageBox.warning(self, t['no_files_title'], t['add_at_least'])
             return
-        # le cartelle devono essere impostate e diverse
-        if not self.out_dir_edit.text().strip() or not self.tmp_dir_edit.text().strip():
-            t = self.i18n[self.language]
-            QMessageBox.warning(self, t['params_title'], 'Seleziona sia la cartella di output che quella temporanea.')
+        # cartella output: richiedi selezione esplicita
+        out_text = self.out_dir_edit.text().strip()
+        if not out_text:
+            QMessageBox.warning(self, 'Missing output', 'select an output dir first please')
             return
-        out_dir = Path(self.out_dir_edit.text().strip()).resolve()
-        tmp_dir = Path(self.tmp_dir_edit.text().strip()).resolve()
-        if out_dir == tmp_dir:
-            QMessageBox.warning(self, self.i18n[self.language]['params_title'], 'Le cartelle di output e temporanea devono essere diverse.')
-            return
+        out_dir = Path(out_text).resolve()
+        tmp_dir = (out_dir / 'tmp').resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
         tmp_dir.mkdir(parents=True, exist_ok=True)
         self.current_out_dir = out_dir
+        self.current_tmp_dir = tmp_dir
         if self.ui_mode == 'simple':
             device = self.simple_model_combo.currentData()
             custom_key = None
@@ -1187,13 +1246,14 @@ class MangaCompressorGUI(QWidget):
             QMessageBox.warning(self, t['params_title'], t['ram_range'])
             return
         if self.save_defaults_chk.isChecked():
-            args = type('Args', (), {'device': device, 'mode': mode, 'quality': quality, 'max_colors': max_colors, 'workers': workers, 'ram_limit': ram_limit, 'suffix': None, 'out_dir': str(out_dir), 'tmp_dir': str(tmp_dir), 'ui_mode': self.ui_mode, 'language': self.language})
+            args = type('Args', (), {'device': device, 'mode': mode, 'quality': quality, 'max_colors': max_colors, 'workers': workers, 'ram_limit': ram_limit, 'suffix': None, 'out_dir': str(out_dir), 'ui_mode': self.ui_mode, 'language': self.language})
             try:
                 save_default_config(args)
                 self.on_log(self.i18n[self.language]['defaults_saved'])
             except Exception as e:
                 self.on_log(self.i18n[self.language]['cannot_save_defaults'].format(err=e))
-        self.progress.setValue(0)
+        # inizializza tracking progress globale
+        self._init_progress_tracking(files)
         self.start_btn.setEnabled(False)
         self.stop_btn.setEnabled(True)
         self.log_list.clear()
@@ -1215,10 +1275,58 @@ class MangaCompressorGUI(QWidget):
         self.log_list.clear()
 
     def on_progress(self, done: int, total: int, percent: float):
-        self.progress.setValue(int(percent))
+        # aggiorna stima durata del segmento successivo in modo adattivo
+        try:
+            if self._anim_total_files <= 0:
+                return
+            # stimiamo tempo per byte dal segmento corrente e regoliamo durata target del prossimo in base alle dimensioni
+            idx = int(self._anim_index)
+            if 0 <= idx < len(self._progress_file_sizes):
+                cur_size = max(1, int(self._progress_file_sizes[idx]))
+            else:
+                cur_size = 1
+            # percent è avanzamento corrente del file, non serve qui per l'animazione lineare
+            # Aggiorna proiezione per il prossimo segmento (se disponibile)
+            next_idx = idx + 1
+            if 0 <= next_idx < len(self._progress_file_sizes):
+                next_size = max(1, int(self._progress_file_sizes[next_idx]))
+                now = time.monotonic()
+                elapsed = max(0.001, now - float(self._anim_seg_start_time))
+                # stima tempo per byte attuale (limitato)
+                t_per_byte = min(0.5, max(0.000001, elapsed / float(cur_size)))
+                est_next = t_per_byte * float(next_size)
+                # smoothing leggero sulla stima futura
+                self._anim_seg_est_next = 0.7 * getattr(self, '_anim_seg_est_next', est_next) + 0.3 * est_next
+                # clamp durata a [2s, 60s]
+                self._anim_est_next_dur = float(min(60.0, max(2.0, self._anim_seg_est_next)))
+        except Exception:
+            pass
 
     def on_file_done(self, file: str, output: str):
         self.on_log(f'Done: {file} -> {output}')
+        # avanza al segmento successivo e aggiorna k/N
+        try:
+            # porta la barra alla fine del segmento corrente
+            if self._anim_total_files > 0:
+                target_end = min(100.0, (self._display_count + 1) * float(getattr(self, '_anim_step', 100.0)))
+                self.progress.setValue(int(round(target_end)))
+            self._display_count = min(self._display_count + 1, self._anim_total_files)
+            self.progress.setFormat(f"{self._display_count}/{self._anim_total_files}")
+            # se ci sono altri segmenti, prepara il prossimo
+            if self._display_count < self._anim_total_files:
+                self._anim_index += 1
+                self._anim_seg_start_frac = float(self.progress.value())
+                # prossimo segmento copre un altro blocco di 100/N
+                step = float(getattr(self, '_anim_step', 100.0))
+                self._anim_seg_end_frac = min(100.0, self._anim_seg_start_frac + step)
+                self._anim_seg_start_time = time.monotonic()
+                # durata target adattiva se stimata, altrimenti fallback 15s
+                self._anim_seg_target_dur = float(getattr(self, '_anim_est_next_dur', 15.0))
+            else:
+                # ultimo segmento: completa al 100%
+                self.progress.setValue(100)
+        except Exception:
+            pass
 
     def on_error(self, message: str):
         self.on_log(f'Error: {message}')
@@ -1227,25 +1335,35 @@ class MangaCompressorGUI(QWidget):
         self.on_log(self.i18n[self.language]['all_done'])
         self.start_btn.setEnabled(True)
         self.stop_btn.setEnabled(False)
-        # non aprire la cartella se è stato premuto Stop
-        if not getattr(self, '_stop_requested', False):
-            try:
-                self.on_open_output()
-            except Exception:
-                pass
-        self._stop_requested = False
+        # forza completamento barra, mostra N/N
         try:
-            tmp_dir = Path(self.tmp_dir_edit.text() or Path.cwd() / 'tmp').resolve()
-            if tmp_dir.exists():
-                for p in tmp_dir.iterdir():
-                    try:
-                        if p.is_file() or p.is_symlink():
-                            p.unlink(missing_ok=True)
-                        elif p.is_dir():
-                            import shutil
-                            shutil.rmtree(p, ignore_errors=True)
-                    except Exception:
-                        pass
+            total = int(self._anim_total_files or self._progress_n_files or 0)
+            if total > 0:
+                self.progress.setValue(100)
+                self.progress.setFormat(f"{total}/{total}")
+            # poi apri output se non è stato premuto Stop
+            if not getattr(self, '_stop_requested', False):
+                try:
+                    self.on_open_output()
+                except Exception:
+                    pass
+            self._stop_requested = False
+            # infine resetta la barra a 0/N e ferma il timer
+            self.progress.setValue(0)
+            self.progress.setFormat(f"0/{total}")
+            self._progress_timer.stop()
+        except Exception:
+            pass
+        # rimuovi completamente la directory temporanea out/tmp
+        try:
+            tmp_dir = getattr(self, 'current_tmp_dir', None)
+            if not tmp_dir and getattr(self, 'current_out_dir', None):
+                tmp_dir = Path(self.current_out_dir) / 'tmp'
+            if tmp_dir:
+                tmp_dir = Path(tmp_dir)
+                if tmp_dir.exists():
+                    import shutil
+                    shutil.rmtree(tmp_dir, ignore_errors=True)
         except Exception:
             pass
 
@@ -1873,13 +1991,10 @@ class MangaCompressorGUI(QWidget):
     def _validate_dirs_enable_start(self):
         try:
             out_t = self.out_dir_edit.text().strip()
-            tmp_t = self.tmp_dir_edit.text().strip()
-            # Se i campi sono vuoti, usa i placeholder come default impliciti
             if not out_t:
                 out_t = str((Path.cwd() / 'compressed').resolve())
-            if not tmp_t:
-                tmp_t = str((Path.cwd() / 'tmp').resolve())
-            ok_dirs = bool(out_t) and bool(tmp_t) and (Path(out_t).resolve() != Path(tmp_t).resolve())
+            # con una sola dir basta che esista una destinazione valida
+            ok_dirs = bool(out_t)
             has_files = self.files_list.count() > 0
             not_running = (self.worker is None) or (not self.stop_btn.isEnabled())
             self.start_btn.setEnabled(ok_dirs and has_files and not_running)
@@ -1914,3 +2029,6 @@ def main():
     sys.exit(app.exec())
 if __name__ == '__main__':
     main()
+
+    
+    
