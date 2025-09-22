@@ -59,6 +59,7 @@
   "estimate_label": "Оценка размера:",
   "estimate_selected": "Оценочный сжатый размер файла {n}:",
   "estimate_total": "Итого:",
+  "estimate_disclaimer": "Оценочно",
   "apply_suggestion": "Применить совет",
   "apply_suggestion_tip": "Установить пресеты на предложенный уровень качества",
   "preview_title": "Пример качества",

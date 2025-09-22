@@ -59,6 +59,7 @@
   "estimate_label": "Stima dimensione:",
   "estimate_selected": "Stima compressa del file {n}:",
   "estimate_total": "Totale:",
+  "estimate_disclaimer": "Stima indicativa",
   "apply_suggestion": "Applica suggerimento",
   "apply_suggestion_tip": "Imposta i preset al livello di qualità suggerito",
   "preview_title": "Esempio di qualità",

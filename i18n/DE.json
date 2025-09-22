@@ -59,6 +59,7 @@
   "estimate_label": "Geschätzte Größe:",
   "estimate_selected": "Geschätzte komprimierte Größe von Datei {n}:",
   "estimate_total": "Gesamt:",
+  "estimate_disclaimer": "Ungefähre Schätzung",
   "apply_suggestion": "Vorschlag anwenden",
   "apply_suggestion_tip": "Presets auf den vorgeschlagenen Qualitätslevel setzen",
   "preview_title": "Qualitätsbeispiel",

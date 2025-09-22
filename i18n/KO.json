@@ -59,6 +59,7 @@
   "estimate_label": "크기 추정:",
   "estimate_selected": "파일 {n}의 예상 압축 크기:",
   "estimate_total": "합계:",
+  "estimate_disclaimer": "대략적인 추정치",
   "apply_suggestion": "제안 적용",
   "apply_suggestion_tip": "품질 제안 수준으로 사전 설정",
   "preview_title": "품질 예시",

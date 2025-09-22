@@ -59,6 +59,7 @@
   "estimate_label": "大小估计:",
   "estimate_selected": "第 {n} 个文件的预计压缩大小:",
   "estimate_total": "总计:",
+  "estimate_disclaimer": "仅供参考",
   "apply_suggestion": "应用建议",
   "apply_suggestion_tip": "将预设设置为建议的质量水平",
   "preview_title": "质量示例",

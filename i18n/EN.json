@@ -59,6 +59,7 @@
   "estimate_label": "Estimated size:",
   "estimate_selected": "Estimated compressed size of file {n}:",
   "estimate_total": "Total:",
+  "estimate_disclaimer": "Estimate only",
   "apply_suggestion": "Apply suggestion",
   "apply_suggestion_tip": "Set presets to the suggested quality level",
   "preview_title": "Quality example",

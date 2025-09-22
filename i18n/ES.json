@@ -59,6 +59,7 @@
   "estimate_label": "Tamaño estimado:",
   "estimate_selected": "Tamaño comprimido estimado del archivo {n}:",
   "estimate_total": "Total:",
+  "estimate_disclaimer": "Estimación aproximada",
   "apply_suggestion": "Aplicar sugerencia",
   "apply_suggestion_tip": "Establecer los preajustes al nivel de calidad sugerido",
   "preview_title": "Ejemplo de calidad",

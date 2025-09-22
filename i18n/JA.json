@@ -59,6 +59,7 @@
   "estimate_label": "サイズ推定:",
   "estimate_selected": "ファイル {n} の推定圧縮サイズ:",
   "estimate_total": "合計:",
+  "estimate_disclaimer": "目安です",
   "apply_suggestion": "提案を適用",
   "apply_suggestion_tip": "提案された品質レベルにプリセットを設定",
   "preview_title": "品質例",

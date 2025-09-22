@@ -323,6 +323,12 @@ class MangaCompressorGUI(QWidget):
         self._progress_timer = QTimer(self)
         self._progress_timer.setInterval(50)
         self._progress_timer.timeout.connect(self._on_progress_tick)
+        # Effetto gradiente pulsante sulla barra di progresso
+        self._pulse_timer = QTimer(self)
+        self._pulse_timer.setInterval(120)
+        self._pulse_timer.timeout.connect(self._update_progressbar_pulse)
+        self._pulse_phase = 0.0
+        self._pulse_active = False
         self._progress_file_sizes = []
         self._progress_total_bytes = 0
         self._anim_total_files = 0
@@ -332,6 +338,9 @@ class MangaCompressorGUI(QWidget):
         self._anim_seg_start_frac = 0.0
         self._anim_seg_end_frac = 0.0
         self._display_count = 0
+        # Storico throughput per media pesata (ultimi K file)
+        self._throughput_hist = []  # list of (bytes, seconds)
+        self._throughput_window = 5
 
     def _build_ui(self):
         root = QHBoxLayout(self)
@@ -407,6 +416,12 @@ class MangaCompressorGUI(QWidget):
         self.suggestion_total_label = QLabel('')
         self.suggestion_total_label.setObjectName('suggestionTotalLabel')
         self.suggestion_total_label.setAlignment(Qt.AlignCenter)
+        # Disclaimer breve sulle stime
+        self.suggestion_disclaimer = QLabel('')
+        try:
+            self.suggestion_disclaimer.setStyleSheet('color: #8b98a5; font-size: 11px;')
+        except Exception:
+            pass
         self.suggestion_apply_btn = QPushButton()
         self.suggestion_apply_btn.setObjectName('suggestionApply')
         self.suggestion_apply_btn.clicked.connect(self.on_apply_suggestion)
@@ -416,6 +431,7 @@ class MangaCompressorGUI(QWidget):
         sug_layout.addWidget(self.suggestion_label)
         sug_layout.addWidget(self.suggestion_separator)
         sug_layout.addWidget(self.suggestion_total_label)
+        sug_layout.addWidget(self.suggestion_disclaimer)
         sug_layout.addStretch(1)
         sug_layout.addWidget(self.suggestion_apply_btn)
         self.suggestion_bar.setMinimumHeight(40)
@@ -747,6 +763,9 @@ class MangaCompressorGUI(QWidget):
             self.progress.setFormat(f"{self._display_count}/{self._anim_total_files}")
             # avvia timer animazione
             self._progress_timer.start()
+            self._start_pulse_animation()
+            # reset storico throughput
+            self._throughput_hist.clear()
         except Exception:
             pass
 
@@ -756,11 +775,11 @@ class MangaCompressorGUI(QWidget):
             N = max(1, int(self._anim_total_files))
             if N <= 0:
                 self.progress.setValue(0)
-                self.progress.setFormat("0/0")
+                self.progress.setFormat("")
                 return
             now = time.monotonic()
             elapsed = max(0.0, now - float(self._anim_seg_start_time))
-            dur = max(0.001, float(self._anim_seg_target_dur))
+            dur = max(0.001, float(self._anim_seg_target_dur)) if self._anim_total_files > 0 else 15.0
             t = min(1.0, elapsed / dur)
             start_v = float(self._anim_seg_start_frac)
             end_v = float(self._anim_seg_end_frac)
@@ -770,6 +789,45 @@ class MangaCompressorGUI(QWidget):
             self.progress.setValue(int(round(cur)))
             # Etichetta: conteggio file completati
             self.progress.setFormat(f"{self._display_count}/{self._anim_total_files}")
+        except Exception:
+            pass
+
+    def _start_pulse_animation(self):
+        try:
+            if not self._pulse_active:
+                self._pulse_active = True
+                self._pulse_phase = 0.0
+                self._pulse_timer.start()
+        except Exception:
+            pass
+
+    def _stop_pulse_animation(self):
+        try:
+            self._pulse_active = False
+            self._pulse_timer.stop()
+            # ripristina stile di default della progress bar
+            self.progress.setStyleSheet('')
+        except Exception:
+            pass
+
+    def _update_progressbar_pulse(self):
+        """Aggiorna lo stile della progress bar con un gradiente scorrevole (effetto pulsante)."""
+        try:
+            self._pulse_phase = (self._pulse_phase + 0.06) % 1.0
+            base = '#3b82f6' if self.theme == 'light' else '#00bcd4'
+            hi = '#93c5fd' if self.theme == 'light' else '#4de1ee'
+            lo = base
+            p = self._pulse_phase
+            w = 0.12
+            p1 = max(0.0, p - w)
+            p2 = p
+            p3 = min(1.0, p + w)
+            style = (
+                "QProgressBar { border: 1px solid transparent; border-radius: 6px; text-align: center; }\n"
+                f"QProgressBar::chunk {{ background: qlineargradient(x1:0, y1:0, x2:1, y2:0,"
+                f" stop:0 {lo}, stop:{p1:.3f} {lo}, stop:{p2:.3f} {hi}, stop:{p3:.3f} {lo}, stop:1 {lo}); }}"
+            )
+            self.progress.setStyleSheet(style)
         except Exception:
             pass
 
@@ -853,7 +911,6 @@ class MangaCompressorGUI(QWidget):
     def _load_defaults_into_ui(self):
         d = self.defaults
         out_dir = d.get('out_dir')
-        # se vuoti (prima esecuzione) lascia i campi vuoti
         if out_dir:
             try:
                 self.out_dir_edit.setText(str(Path(out_dir).resolve()))
@@ -1048,6 +1105,9 @@ class MangaCompressorGUI(QWidget):
             self.lbl_model.setText(t['model'])
         if hasattr(self, 'suggestion_apply_btn'):
             self.suggestion_apply_btn.setText(t['apply_suggestion'])
+        # Disclaimer stime
+        if hasattr(self, 'suggestion_disclaimer'):
+            self.suggestion_disclaimer.setText(t.get('estimate_disclaimer', '≈'))
         self.defaults['language'] = self.language
         self._schedule_save()
         try:
@@ -1348,10 +1408,11 @@ class MangaCompressorGUI(QWidget):
                 except Exception:
                     pass
             self._stop_requested = False
-            # infine resetta la barra a 0/N e ferma il timer
+            # infine resetta la barra e ferma i timer
             self.progress.setValue(0)
-            self.progress.setFormat(f"0/{total}")
+            self.progress.setFormat("")
             self._progress_timer.stop()
+            self._stop_pulse_animation()
         except Exception:
             pass
         # rimuovi completamente la directory temporanea out/tmp
@@ -1600,6 +1661,8 @@ class MangaCompressorGUI(QWidget):
             if self.files_list.count() == 0:
                 if hasattr(self, 'suggestion_bar'):
                     self.suggestion_bar.setVisible(False)
+                if hasattr(self, 'suggestion_disclaimer'):
+                    self.suggestion_disclaimer.setVisible(False)
                 return
 
             t = self.i18n.get(self.language, {})
@@ -1667,6 +1730,8 @@ class MangaCompressorGUI(QWidget):
             # Show the bar
             if hasattr(self, 'suggestion_bar'):
                 self.suggestion_bar.setVisible(True)
+            if hasattr(self, 'suggestion_disclaimer'):
+                self.suggestion_disclaimer.setVisible(True)
 
             # Keep suggested preset reference (for potential future logic)
             self._suggested_preset = preset_key
@@ -1674,6 +1739,8 @@ class MangaCompressorGUI(QWidget):
             try:
                 if hasattr(self, 'suggestion_bar'):
                     self.suggestion_bar.setVisible(False)
+                if hasattr(self, 'suggestion_disclaimer'):
+                    self.suggestion_disclaimer.setVisible(False)
             except Exception:
                 pass
 

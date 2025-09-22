@@ -59,6 +59,7 @@
   "estimate_label": "حجم تقديري:",
   "estimate_selected": "الحجم المضغوط التقديري للملف {n}:",
   "estimate_total": "الإجمالي:",
+  "estimate_disclaimer": "تقدير تقريبي",
   "apply_suggestion": "تطبيق الاقتراح",
   "apply_suggestion_tip": "تعيين الإعدادات المسبقة إلى المستوى المقترح",
   "preview_title": "مثال الجودة",
