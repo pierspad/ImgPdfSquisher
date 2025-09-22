@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=ImgPDFSquisher
+Comment=A Python GUI application for reducing the filesize of PDF with high resolution images
+Comment[it]=Un'applicazione GUI Python per ridurre le dimensioni dei file PDF con immagini ad alta risoluzione
+Exec=imgpdfsquisher
+Icon=imgpdfsquisher
+Terminal=false
+Type=Application
+Categories=Graphics;Office;Photography;
+MimeType=application/pdf;
+Keywords=pdf;image;compression;compress;reduce;size;manga;
+StartupNotify=true

@@ -1,0 +1,27 @@
+# pyproject.toml (nella root del progetto)
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "imgpdfsquisher"
+version = "1.0.0"
+description = "A Python GUI application for reducing the filesize of PDF with high resolution images"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "pierspad"}]
+dependencies = [
+  "pillow",
+  "reportlab",
+  "charset-normalizer",
+  "PySide6",
+  "pdf2image",
+]
+
+[project.urls]
+Homepage = "https://github.com/pierspad/imgpdfsquisher"
+
+# se hai __main__.py puoi anche evitare gli entry-points
+[project.scripts]
+imgpdfsquisher = "imgpdfsquisher.__main__:main"

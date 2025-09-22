@@ -1,0 +1,22 @@
+# File e cartelle Python
+*.pdf
+*.spec.bak
+__pycache__/
+.venv/
+
+# Cartelle di build/distribuzione
+build/
+dist/
+imgpdfsquisher
+
+# Ignora archivi sorgente e pacchetti generati
+build-publish-scripts/*.tar.gz
+build-publish-scripts/*.pkg.tar.zst
+
+# Ignora cartelle di build
+build-publish-scripts/src/
+build-publish-scripts/pkg/
+build-publish-scripts/usr/
+
+# Ignora repo locale
+aur-repo/
