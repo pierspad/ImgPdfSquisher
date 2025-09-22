@@ -1,7 +1,7 @@
 # Maintainer: pierspad
 pkgname=imgpdfsquisher
-pkgver=1.2.1
-pkgrel=2
+pkgver=1.3.0
+pkgrel=1
 pkgdesc="A Python GUI application for reducing the filesize of PDF with high resolution images"
 arch=('any')
 url="https://github.com/pierspad/imgpdfsquisher"
@@ -22,7 +22,7 @@ optdepends=('python-pip: per installare plugin opzionali')
 
 source=("$pkgname-$pkgver.tar.gz")
 # Lo script di build aggiornerà automaticamente questo valore con updpkgsums
-sha256sums=('622c9551fc903378c83c8ba390d80158fdfa77e7a2ba18818944a972f1242ff5')
+sha256sums=('447fc6e7077c112681629de4fd65e53a7613cd7f60e1aa16b6d5c0f0748a6baf')
 
 prepare() {
   cd "$srcdir/imgpdfsquisher-$pkgver"
