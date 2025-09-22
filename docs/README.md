@@ -89,14 +89,6 @@ Modes
     color        Full-color JPEG — for color pages/covers
 ```
 
-### CLI Options
-- `--device`: Target device (phone, tablet_7, tablet_10, ereader, desktop)
-- `--mode`: Compression mode (auto, bw, grayscale, color)
-- `--quality`: JPEG quality 1-100 (default: 85)
-- `--workers`: Number of parallel workers (default: auto)
-- `--ram-limit`: RAM usage limit percentage (default: 75)
-- `--verbose`: Enable detailed logging
-
 ## Installation
 
 ### From Source
@@ -125,6 +117,9 @@ Pull requests are welcome! We especially appreciate help with:
 - Bug fixes and feature improvements
 
 For major changes, please open an issue first to discuss your ideas.
+
+## AI Disclosure
+This project was developed with the assistance of Large Language Models, used to support code writing and documentation.
 
 ## License
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
