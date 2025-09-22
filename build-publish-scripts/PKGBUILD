@@ -22,7 +22,7 @@ optdepends=('python-pip: per installare plugin opzionali')
 
 source=("$pkgname-$pkgver.tar.gz")
 # Lo script di build aggiornerà automaticamente questo valore con updpkgsums
-sha256sums=('f69278df236083504064913f68c62b33ad563c2343d86dee7546d250a3d944ea')
+sha256sums=('622c9551fc903378c83c8ba390d80158fdfa77e7a2ba18818944a972f1242ff5')
 
 prepare() {
   cd "$srcdir/imgpdfsquisher-$pkgver"
