@@ -23,7 +23,7 @@ optdepends=('python-pip: per installare plugin opzionali')
 source=(
   "$pkgname-$pkgver.tar.gz::https://github.com/pierspad/imgpdfsquisher/archive/refs/tags/v$pkgver.tar.gz"
 )
-sha256sums=('0192de6f477a5dad188c1b6ef15f8cd12d5aff1bffb2e49f787db2247b94a2ad')
+sha256sums=('49ac2a0474932fe001db671473342ff34a54c09793f0c4a50c3a8d923e59a862')
 
 prepare() {
   cd "$srcdir/imgpdfsquisher-$pkgver"
