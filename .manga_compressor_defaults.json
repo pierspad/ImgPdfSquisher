@@ -10,5 +10,5 @@
   "tmp_dir": "tmp",
   "theme": "dark",
   "language": "en",
-  "ui_mode": "advanced"
+  "ui_mode": "simple"
 }

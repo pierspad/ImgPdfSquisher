@@ -311,16 +311,12 @@ class MangaCompressorModular:
                 img_reader = ImageReader(io.BytesIO(compressed_data))
                 img_width, img_height = size
                 if img_width > 0 and img_height > 0:
-                    page_width, page_height = self.device_profile['size']
-                    scale_w = page_width / img_width
-                    scale_h = page_height / img_height
-                    scale = min(scale_w, scale_h)
-                    final_width = img_width * scale
-                    final_height = img_height * scale
-                    x = (page_width - final_width) / 2
-                    y = (page_height - final_height) / 2
+                    # Imposta la dimensione della pagina esattamente uguale a quella dell'immagine
+                    # in modo da evitare bordi bianchi e mantenere le proporzioni/origine.
+                    page_width, page_height = img_width, img_height
                     canvas_obj.setPageSize((page_width, page_height))
-                    canvas_obj.drawImage(img_reader, x, y, final_width, final_height)
+                    # Disegna l'immagine a piena pagina senza ulteriori ridimensionamenti
+                    canvas_obj.drawImage(img_reader, 0, 0, page_width, page_height)
                     canvas_obj.showPage()
                 else:
                     logging.warning(f'Image {idx} has invalid dimensions: {size}')
